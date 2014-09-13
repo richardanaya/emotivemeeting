@@ -1,0 +1,36 @@
+body {
+    background-color: #212121;
+    font-family: helvetica, arial;
+}
+
+.chatArea {
+    width: 700px;
+    position: absolute;
+    top: 200px;
+    left: 50%;
+    margin-left: -350px;
+    background-color: #808080;
+    border: solid 5px black;
+    padding: 5px;
+}
+
+.chatMessage {
+    border: solid 1px #333;
+    padding: 20px 5px;
+}
+
+.chatMessageUser {
+    color: #80CBEE;
+}
+
+.chatMessageText {
+    color: #FEFEFE;
+}
+
+.analytics {
+    color: #FEFEFE;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    cursor: pointer;
+}
