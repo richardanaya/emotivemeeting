@@ -20,15 +20,7 @@ var _person = null;
 var start = function(){
     // Set up analytics event handler
     $('.analytics').on('click', function(e) {
-        getCSV(_meeting).then(function(CSV) {
-            console.log(CSV);
-            GD.loginPhase1().then(function(SST) {
-                console.log('SST:' + SST);
-                return GD.loginPhase2(SST);
-            }).then(function(TT) {
-                console.log('TT:' + TT);
-            });
-        });
+        // Go to analytics page
     });
 
     var messageCount = 0;
