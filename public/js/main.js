@@ -25,6 +25,13 @@ var _meeting = null;
 var _person = null;
 
 var start = function(){
+    // Set up analytics event handler
+    $('.analytics').on('click', function(e) {
+        getCSV(_meeting).then(function(CSV) {
+            console.log(CSV);
+        });
+    });
+
     var messageCount = 0;
 
     function refreshChat(){
