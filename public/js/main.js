@@ -38,10 +38,10 @@ var start = function(){
             for (var i  = 0 ; i < messages.length; i++){
                 var sentiment = "";
                 if(messages[i].score > 0){
-                    sentiment = '<i class="fa fa-thumbs-o-up"></i>'
+                    sentiment = '<span style="color:#00ff00"><i class="fa fa-thumbs-o-up"></i></span>'
                 }
                 else if (messages[i].score < 0){
-                    sentiment = '<i class="fa fa-thumbs-o-down"></i>'
+                    sentiment = '<span style="color:#ff0000"><i class="fa fa-thumbs-o-down"></i></span>'
                 }
                 $('.chatArea').append('<div class="chatMessage"><span class="chatMessageUser">'+messages[i].user+' '+sentiment+': </span><span class="chatMessageText">'+messages[i].text+'</span></div>')
             }
