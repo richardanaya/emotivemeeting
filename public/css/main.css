@@ -6,7 +6,7 @@ body {
 .chatArea {
     width: 700px;
     position: absolute;
-    top: 200px;
+    top: 50px;
     left: 50%;
     margin-left: -350px;
     background-color: #808080;
