@@ -8,7 +8,7 @@ Traitify.ui.slideDeck(assessmentId, ".assessment", function(data) {
 });*/
 
 // https://parse.com/apps/emotivemeeting
-Parse.init('cGPTSnSjqp5MNITUOfkG9NzNBOn4cMQn4VC1AK7y', '71nkSrtLNREfl2DVzTkrFg9uybf6k4HhvbAYeI0c');
+Parse.initialize('cGPTSnSjqp5MNITUOfkG9NzNBOn4cMQn4VC1AK7y', '71nkSrtLNREfl2DVzTkrFg9uybf6k4HhvbAYeI0c');
 
 
 function getParameterByName(name) {

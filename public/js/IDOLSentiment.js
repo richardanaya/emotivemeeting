@@ -9,8 +9,18 @@
  * @param error
  */
 function getSentiment(text, callback, error) {
+    var urlBase = 'https://api.idolondemand.com/1/api/sync/analyzesentiment/v1';
+    var queryText = text.split(' ').join('+'); // Make+the+input+text+look+like+this
+    var url = urlBase + '?text=' + queryText + '&language=eng&apikey=d3ac7dae-8dee-4716-b7fc-96905b9ae834';
+    $.ajax({
+      url: url
+    }).done(function( result ) {
+          alert( "Sentiment Result: " + JSON.stringify(result) );
+    });
 
-
+    /*
+    curl "https://api.idolondemand.com/1/api/sync/analyzesentiment/v1?text=I+like+oranges+but+I+don't+like+bread&language=eng&apikey=d3ac7dae-8dee-4716-b7fc-96905b9ae834"
+     */
 };
 
 
