@@ -4,6 +4,9 @@ function sendMessageToMeeting(data, callback){
     var Note = Parse.Object.extend("Note");
     var Sentiment = Parse.Object.extend("Sentiment");
 
+
+
+
     getSentiments(data.text).then(function(sentimentResult) {
         var sentiments = [];
 
@@ -23,6 +26,22 @@ function sendMessageToMeeting(data, callback){
     }).then(function(sentiments) {
         var newNote = new Note(data);
         newNote.set('sentiments', sentiments);
-        newNote.save().then(callback);
+        return newNote.save();
+    }).then(function(note){
+        callback(note);
+        $.ajax('/action?message='+encodeURIComponent(data.text),{success:function(data){
+            var cmd = JSON.parse(data);
+            if(cmd.result.action){
+                var actions = note.get("actions");
+                var Action = Parse.Object.extend("Action");
+                var a = new Action();
+                a.set("type",cmd.result.action);
+                a.set("data",cmd.result.parameters);
+                return a.save().then(function(savedAction){
+                    note.set("action",savedAction)
+                    note.save();
+                });
+            }
+        }})
     });
 }
