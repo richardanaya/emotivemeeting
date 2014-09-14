@@ -53,10 +53,23 @@ function exportMeetings() {
 function exportSentiments() {
     var CSV = ['sentimentID,score,sentiment,topic,noteID'];
     var query = new Parse.Query('Sentiment');
+    var memoTable = {};
     return query.each(function(sentiment) {
-        var noteQuery = new Parse.Query('Note');
-        noteQuery.equalTo('sentiments', sentiment);
-        return noteQuery.first().then(function(note) {
+        var notePromise;
+        if (memoTable[sentiment.id]) {
+            notePromise = Parse.Promise.as(memoTable[sentiment.id]);
+        }
+        else {
+            var noteQuery = new Parse.Query('Note');
+            noteQuery.equalTo('sentiments', sentiment);
+            noteQuery.include('sentiments');
+            notePromise = noteQuery.first().then(function(note) {
+                var sentiments = note ? note.get('sentiments') : [];
+                _.forEach(sentiments, function(s) { memoTable[s.id] = note; });
+                return note;
+            });
+        }
+        return notePromise.then(function(note) {
             var noteID = note ? note.id : '';
             // id, score, sentiment, topic, note
             var line = [sentiment.id,

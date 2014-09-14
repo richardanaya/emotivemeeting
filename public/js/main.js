@@ -20,20 +20,7 @@ var _person = null;
 var start = function(){
     // Set up analytics event handler
     $('.analytics').on('click', function(e) {
-        getActions({meeting:_meeting}).then(function(actions){
-            $('.actions','#analyticsDialog').html("")
-            for(var i in actions){
-                $('.actions','#analyticsDialog').append('<div class="action">'+actions[i].get("type")+' '+JSON.stringify(actions[i].get("data"))+'</div>')
-            }
-        })
-        $('.participants','#analyticsDialog').html("")
-        loadMeeting().then(function(meet){
-            var people = meet.get("people");
-            for(var i in people){
-                $('.participants','#analyticsDialog').append('<div class="participant">'+people[i].get("name")+'('+people[i].get("role")+'/'+people[i].get("trait")+')</div>')
-            }
-        })
-
+        buildAnalyticsDialog();
         $('#analyticsDialog').modal();
     });
 
