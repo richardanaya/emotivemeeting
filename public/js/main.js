@@ -54,10 +54,12 @@ var start = function(){
 };
 
 
-var q = new Parse.Query("Meeting");
-q.equalTo("name",meeting);
-q.include("people");
-q.first().then(function(m){
+
+function loadMeeting() {
+    var q = new Parse.Query("Meeting");
+    q.equalTo("name",meeting);
+    q.include("people");
+    return q.first().then(function(m){
     if(m){
         return m;
     }
@@ -67,39 +69,45 @@ q.first().then(function(m){
         m.set("name",meeting);
         return m.save();
     }
-}).then(function(m){
-    _meeting = m;
+    }).then(function(m){
+        _meeting = m;
+        return m;
+    });
+}
+
+
+function loadPerson() {
     var pq = new Parse.Query("Person");
     pq.equalTo("name",user);
-    return pq.first();_
-}).then(function(person){
-    if(person){
+    return pq.first().then(function(person){
+        if(person){
+            return person;
+        }
+        else {
+            var Person = Parse.Object.extend("Person");
+            p = new Person();
+            p.set("name",user);
+            return p.save();
+        }
+    }).then(function(person){
+        _person = person;
         return person;
-    }
-    else {
-        var Person = Parse.Object.extend("Person");
-        p = new Person();
-        p.set("name",user);
-        return p.save();
-    }
-}).then(function(person){
-    _person = person;
-    var people = _meeting.get("people");
-    if(people){
-        var found = false;
-        for(var i = 0 ; i < people.length; i++){
-            if(people[i].id == person.id){
-                found = true;
-                break;
-            }
-        }
-        if(!found){
-            people.push(person);
-        }
-    }else {
-        _meeting.set("people",[person]);
-    }
+    });
+}
+
+
+function addPersonToMeeting(person) {
+    _meeting.addUnique('people', person);
     return _meeting.save();
-}).then(function(m){
+}
+
+
+// Load global objects and start the app
+loadMeeting().then(function() {
+    return loadPerson();
+}).then(function(person) {
+    return addPersonToMeeting(person);
+}).then(function() {
     start();
 });
+
