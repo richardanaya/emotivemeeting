@@ -7,6 +7,10 @@ Traitify.ui.slideDeck(assessmentId, ".assessment", function(data) {
     Traitify.ui.resultsProp(assessmentId, ".assessment", {showTraits: true});
 });*/
 
+// https://parse.com/apps/emotivemeeting
+Parse.init('cGPTSnSjqp5MNITUOfkG9NzNBOn4cMQn4VC1AK7y', '71nkSrtLNREfl2DVzTkrFg9uybf6k4HhvbAYeI0c');
+
+
 function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -16,7 +20,6 @@ function getParameterByName(name) {
 
 var meeting = getParameterByName("meeting");
 var user = getParameterByName("user");
-
 
 function refreshChat(){
     getChatMessages({meeting:meeting},function(data){
