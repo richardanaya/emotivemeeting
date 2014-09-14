@@ -1,11 +1,4 @@
-/*Traitify.setPublicKey("lli04a6opusurc9j5q6nlvh38u");
-Traitify.setHost("https://api-sandbox.traitify.com");
-Traitify.setVersion("v1");
-var assessmentId = 'ee87be62-b070-43b7-8915-eeae1d02370b';
-Traitify.ui.slideDeck(assessmentId, ".assessment", function(data) {
-    debugger;
-    Traitify.ui.resultsProp(assessmentId, ".assessment", {showTraits: true});
-});*/
+
 
 // https://parse.com/apps/emotivemeeting
 Parse.initialize('cGPTSnSjqp5MNITUOfkG9NzNBOn4cMQn4VC1AK7y', '71nkSrtLNREfl2DVzTkrFg9uybf6k4HhvbAYeI0c');
@@ -148,3 +141,44 @@ loadMeeting().then(function() {
     start();
 });
 
+
+$('.user').click(function(){
+    $('.userName','#userSettings').html(user);
+    $('.userRole','#userSettings').val(_person.get("role"));
+    $('.userRole','#userSettings').on("blur",function(){
+        _person.set("role",$(this).val());
+        _person.save();
+    })
+    $('.userTrait','#userSettings').html(_person.get("trait"));
+    $('#userSettings').modal();
+    $(".btnTakeTest").click(function(){
+        Traitify.setPublicKey("bhjtda24lq75eivuug5hnlu9j7");
+        Traitify.setHost("https://api-sandbox.traitify.com");
+        Traitify.setVersion("v1");
+
+        //curl https://api-sandbox.traitify.com/v1/assessments -H "Content-Type: application/json" -unps7ahk5oqhl5bdgua6lso3rp:datahack  -d '{"deck_id": "career-deck"}'
+
+        $.ajax({url:"/assess",
+            success: function(res){
+                var assessmentId = res.id;
+                var traitTest = Traitify.ui.slideDeck(assessmentId, ".assessment", function(data) {
+                    Traitify.ui.resultsProp(assessmentId, ".assessment", {showTraits: true});
+                    Traitify.getPersonalityTypes(assessmentId, function(results){
+                        debugger;
+                        var type = "";
+                        var score = 0;
+                        for(var i in results.personality_types){
+                            var t = results.personality_types[i];
+                            if(t.score > score){
+                                type = t.personality_type.name;
+                                score = t.score;
+                            }
+                        }
+                        _person.set("trait",type);
+                        _person.save();
+                        $('.userTrait','#userSettings').html(type);
+                    });
+                });
+            }});
+    })
+})

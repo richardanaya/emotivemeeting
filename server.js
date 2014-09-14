@@ -46,6 +46,29 @@ server.get("/action",
     }
 );
 
+server.get("/assess",
+    function (req, res) {
+        var request = require('request');
+
+        var options = {
+            url: 'https://unps7ahk5oqhl5bdgua6lso3rp:datahack@api-sandbox.traitify.com/v1/assessments',
+            method: 'POST',
+            json: {"deck_id": "career-deck"}
+        };
+
+        function callback(error, response, body) {
+            if (!error && response.statusCode == 200) {
+                res.send(body);
+            }
+            else {
+                res.send(body);
+            }
+        }
+
+        request(options, callback);
+    }
+);
+
 
 server.get("/gdc/account/login",
     function (req, res) {
