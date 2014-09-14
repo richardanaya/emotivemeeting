@@ -29,12 +29,14 @@ function refreshChat(){
         }
         $('.chatArea').append('<div><input type="text" class="sendMessage"></div>')
         $('.sendMessage').on("keydown", function(e){
-            if(e.keyCode == 13){
-                sendMessageToMeeting({user:user, message:$(this).val(), meeting: meeting},function(){
+            if(e.keyCode == 13) {
+                var message = $(this).val();
+                getSentiment(message);
+                sendMessageToMeeting({user:user, message:message, meeting: meeting},function(){
                     refreshChat();
                 });
             }
-        })
+        });
         $('.sendMessage').focus();
     });
 }
