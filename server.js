@@ -59,7 +59,12 @@ server.get("/gdc/account/login",
         });
         var options = {
             url: 'https://secure.gooddata.com/gdc/account/login',
-            method: 'POST'
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Content-Length': postData.length  // GoodData requires Content-Length header
+            }
         };
         var postRequest = request(options, function(error, response, body) {
                 console.log('Callback: ' + response);

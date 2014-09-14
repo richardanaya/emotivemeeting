@@ -16,9 +16,9 @@ GD.loginPhase1 = function() {
         url : '/gdc/account/login',
         data: {},
         success: function(data, textStatus, jqXHR) {
-           console.log(JSON.stringify(data));
-            promise.resolve(data);
-                    },
+           console.log('/gdc/account/login returned: \n' + data);
+            promise.resolve(JSON.parse(data));
+        },
         error: function (jqXHR, textStatus, error)
         {
             promise.reject(error);
