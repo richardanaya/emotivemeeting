@@ -31,6 +31,9 @@ var start = function(){
             console.log(CSV);
             GD.loginPhase1().then(function(SST) {
                 console.log('SST:' + SST);
+                return GD.loginPhase2(SST);
+            }).then(function(TT) {
+                console.log('TT:' + TT);
             });
         });
     });

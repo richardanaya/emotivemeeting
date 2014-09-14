@@ -67,9 +67,12 @@ server.get("/gdc/account/login",
             }
         };
         var postRequest = request(options, function(error, response, body) {
-                console.log('Callback: ' + response);
                 if (!error && response.statusCode == 200) {
-                    res.send(body);
+                    var cookies = response.headers['set-cookie'];
+                    var SSTCookie = cookies[1];
+                    var SST = SSTCookie.substring(11, 27);
+                    console.log('SST =' + SST);
+                    res.send(SST);
                 }
                 else {
                     res.send(body);
@@ -81,6 +84,32 @@ server.get("/gdc/account/login",
     }
 );
 
+
+server.get("/gdc/account/token",
+    function (req, res) {
+        var request = require('request');
+        var SST = req.query.SST;
+        var options = {
+            url: 'https://secure.gooddata.com/gdc/account/token',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Cookie': '$Version=0; GDCAuthSST=' + SST + '; $Path=/gdc/account'
+            }
+        };
+        request(options, function(error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    var cookies = response.headers['set-cookie'];
+                    var TT = cookies[0];
+                    res.send(TT); // This must be included in the header of every subsequent request.
+                }
+                else {
+                    res.send(body);
+                }
+            }
+        );
+    }
+);
 
 server.get(/^.*$/,
     function (req, res) {
