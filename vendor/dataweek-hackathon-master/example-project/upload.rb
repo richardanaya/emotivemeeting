@@ -7,9 +7,10 @@ require 'gooddata'
 
 AUTH_TOKEN = 'ONBDIS852d718ca'
 
- GoodData.logging_on
+GoodData.logging_on
 
 GoodData.with_connection('dan.treiman@gmail.com', 'pAic2Aph2eF2od4v') do |c|
+
   blueprint = GoodData::Model::ProjectBlueprint.build("em-testing") do |p|
     p.add_date_dimension('date')
 
@@ -48,24 +49,24 @@ GoodData.with_connection('dan.treiman@gmail.com', 'pAic2Aph2eF2od4v') do |c|
       d.add_attribute('topic');
       d.add_reference('noteID', :dataset => "notes");
     end
-
   end
 
-  project = GoodData::Project.create_from_blueprint(blueprint, :auth_token => AUTH_TOKEN)
-  puts "Created project #{project.pid}"
-
-  #GoodData::with_project(project.pid) do |p|
+  GoodData::with_project('oerzm0602504wzhrz9awg3qcfpg323g2') do |p|
     # Load data
-   # GoodData::Model.upload_data('/Users/dtreiman/Desktop/emotivemeeting/meetings.csv, 'notes')
+   GoodData::Model.upload_data('data/persons.csv', blueprint, 'persons')
+   GoodData::Model.upload_data('data/meetings.csv', blueprint, 'meetings')
+   GoodData::Model.upload_data('data/actions.csv', blueprint, 'actions')
+   GoodData::Model.upload_data('data/notes.csv', blueprint, 'notes')
+   GoodData::Model.upload_data('data/sentiments.csv', blueprint, 'sentiments')
 
     # create  metric
 
 # create a metric
     #metric = p.fact('fact.quotes.volume').create_metric
     #metric.save
-
+    
     #report = p.create_report(title: 'Awesome_report', top: [metric], left: ['date.date.mmddyyyy'])
     #report.save
 
-#  end
+  end
 end

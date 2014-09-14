@@ -51,7 +51,7 @@ function exportMeetings() {
 }
 
 function exportSentiments() {
-    var CSV = ['sentimentID,score,sentiment,topic'];
+    var CSV = ['sentimentID,score,sentiment,topic,noteID'];
     var query = new Parse.Query('Sentiment');
     return query.each(function(sentiment) {
         var noteQuery = new Parse.Query('Note');
@@ -76,7 +76,7 @@ function dateToString(date) {
     var options = {
         year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit"
     };
-    return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + (date.getDay() + 1) + ' ' + date.toLocaleTimeString("en-us", options);
+    return (date.getMonth() + 1) + '/' + (date.getDay() + 1) + '/' + date.getFullYear() + ' ' + date.toLocaleTimeString("en-us", options);
 }
 
 
