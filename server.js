@@ -47,6 +47,36 @@ server.get("/action",
 );
 
 
+server.get("/gdc/account/login",
+    function (req, res) {
+        var request = require('request');
+        var postData = JSON.stringify({
+            "postUserLogin": {
+                "login": "dan.treiman@gmail.com",
+                "password": "pAic2Aph2eF2od4v",
+                "remember": 1
+            }
+        });
+        var options = {
+            url: 'https://secure.gooddata.com/gdc/account/login',
+            method: 'POST'
+        };
+        var postRequest = request(options, function(error, response, body) {
+                console.log('Callback: ' + response);
+                if (!error && response.statusCode == 200) {
+                    res.send(body);
+                }
+                else {
+                    res.send(body);
+                }
+            }
+        );
+        postRequest.write(postData);
+        postRequest.end();
+    }
+);
+
+
 server.get(/^.*$/,
     function (req, res) {
         res.redirect("index.html");

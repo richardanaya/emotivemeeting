@@ -27,7 +27,7 @@ function getSentiments(text, callback, error) {
         if (error) {
             error();
         }
-        promise.error(error);
+        promise.reject(error);
     });
     return promise;
     /*

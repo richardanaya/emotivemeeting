@@ -29,6 +29,9 @@ var start = function(){
     $('.analytics').on('click', function(e) {
         getCSV(_meeting).then(function(CSV) {
             console.log(CSV);
+            GD.loginPhase1().then(function(SST) {
+                console.log('SST:' + SST);
+            });
         });
     });
 
