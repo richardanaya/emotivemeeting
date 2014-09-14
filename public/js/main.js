@@ -46,12 +46,12 @@ var start = function(){
             for (var i  = 0 ; i < messages.length; i++){
                 var sentiment = "";
                 if(messages[i].score > 0){
-                    sentiment = '<span style="color:#00ff00"><i class="fa fa-thumbs-o-up"></i></span>'
+                    sentiment = " positive"
                 }
                 else if (messages[i].score < 0){
-                    sentiment = '<span style="color:#ff0000"><i class="fa fa-thumbs-o-down"></i></span>'
+                    sentiment = " negative"
                 }
-                $('.chatArea').append('<div class="chatMessage"><span class="chatMessageUser">'+messages[i].user+' '+sentiment+': </span><span class="chatMessageText">'+messages[i].text+'</span></div>')
+                $('.chatArea').append('<div class="chatMessage'+sentiment+'"><span class="chatMessageUser">'+messages[i].user+' </span><span class="chatMessageText">'+messages[i].text+'</span></div>')
             }
             $('.chatArea').append('<div><input type="text" class="sendMessage"></div>')
             $('.sendMessage').on("keydown", function(e){

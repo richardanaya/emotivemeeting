@@ -1,30 +1,47 @@
 body {
-    background-color: #212121;
-    font-family: helvetica, arial;
+    background-color: #e7e8da;
+    font-family: 'Helvetica Neue','Actor', sans-serif;
+}
+
+.title {
+    position: absolute;
+    top: 20px;
+    height: 20px;
+    color: black;
+    font-size: 64px;
+    font-weight: bold;
 }
 
 .chatArea {
     width: 700px;
     position: absolute;
-    top: 50px;
+    top: 100px;
     left: 50%;
     margin-left: -350px;
-    background-color: #808080;
-    border: solid 5px black;
     padding: 5px;
 }
 
 .chatMessage {
-    border: solid 1px #333;
-    padding: 20px 5px;
+    padding: 20px 20px;
+    background-color: rgba(255,255,255,.3);
+    margin: 20px;
+    font-size: 20px
+}
+
+.chatMessage.positive {
+    background-color: rgba(0,157,142,.3);
+}
+
+.chatMessage.negative {
+    background-color: rgba(253,97,52,.3);
 }
 
 .chatMessageUser {
-    color: #80CBEE;
+    font-weight: bold;
 }
 
 .chatMessageText {
-    color: #FEFEFE;
+    color: #333;
 }
 
 .user {
