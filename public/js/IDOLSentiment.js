@@ -15,7 +15,7 @@ function getSentiment(text, callback, error) {
     $.ajax({
       url: url
     }).done(function( result ) {
-          alert( "Sentiment Result: " + JSON.stringify(result) );
+          console.log( "Sentiment Result: " + JSON.stringify(result) );
     });
 
     /*

@@ -20,7 +20,6 @@ function getParameterByName(name) {
 var meeting = getParameterByName("meeting");
 var user = getParameterByName("user");
 
-
 var _meeting = null;
 
 var start = function(){
