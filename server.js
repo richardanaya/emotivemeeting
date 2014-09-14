@@ -25,9 +25,9 @@ var server = configureServer();
 server.get("/action",
     function (req, res) {
         var request = require('request');
-
+        console.log(encodeURIComponent(req.query.message));
         var options = {
-            url: 'https://api.api.ai/v1/query/?query='+req.query.message+'&subscription-key=af522130-48e4-4ab7-be5d-05426eaca8a2',
+            url: 'https://api.api.ai/v1/query/?query=' + encodeURIComponent(req.query.message) + '&subscription-key=af522130-48e4-4ab7-be5d-05426eaca8a2',
             headers: {
                 'Authorization': 'Bearer 323196e330aa406a8e0c00db315f8f22'
             }

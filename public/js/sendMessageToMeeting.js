@@ -30,13 +30,20 @@ function sendMessageToMeeting(data, callback){
     }).then(function(note){
         callback(note);
         $.ajax('/action?message='+encodeURIComponent(data.text),{success:function(data){
-            var cmd = JSON.parse(data);
-            if(cmd.result.action){
+            var cmd
+            try {
+               cmd = JSON.parse(data);
+            }
+            catch (e) {
+                console.log('Parsing response from api.ai failed ' + e);
+            }
+            if (cmd && cmd.result.action) {
                 var actions = note.get("actions");
                 var Action = Parse.Object.extend("Action");
-                var a = new Action();
-                a.set("type",cmd.result.action);
-                a.set("data",cmd.result.parameters);
+                var a = new Action({
+                    type: cmd.result.action,
+                    data: cmd.result.parameters
+                });
                 return a.save().then(function(savedAction){
                     note.set("action",savedAction)
                     note.save();
