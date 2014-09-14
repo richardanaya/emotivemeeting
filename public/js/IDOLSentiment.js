@@ -5,19 +5,31 @@
 
 /**
  * @param text The text to analyze.
- * @param success
+ * @param callback - object with three keys: positive (array), negative (array), aggregate (object).
  * @param error
  */
-function getSentiment(text, callback, error) {
+function getSentiments(text, callback, error) {
+    var promise = new Parse.Promise();
     var urlBase = 'https://api.idolondemand.com/1/api/sync/analyzesentiment/v1';
     var queryText = text.split(' ').join('+'); // Make+the+input+text+look+like+this
     var url = urlBase + '?text=' + queryText + '&language=eng&apikey=d3ac7dae-8dee-4716-b7fc-96905b9ae834';
     $.ajax({
       url: url
     }).done(function( result ) {
-          console.log( "Sentiment Result: " + JSON.stringify(result) );
+        if (callback) {
+            callback(result);
+        }
+        else {
+            console.log( 'Sentiment Result: ' + JSON.stringify(result) );
+        }
+        promise.resolve(result);
+    }).fail(function(error) {
+        if (error) {
+            error();
+        }
+        promise.error(error);
     });
-
+    return promise;
     /*
     curl "https://api.idolondemand.com/1/api/sync/analyzesentiment/v1?text=I+like+oranges+but+I+don't+like+bread&language=eng&apikey=d3ac7dae-8dee-4716-b7fc-96905b9ae834"
      */

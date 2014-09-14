@@ -9,6 +9,7 @@ Traitify.ui.slideDeck(assessmentId, ".assessment", function(data) {
 
 // https://parse.com/apps/emotivemeeting
 Parse.initialize('cGPTSnSjqp5MNITUOfkG9NzNBOn4cMQn4VC1AK7y', '71nkSrtLNREfl2DVzTkrFg9uybf6k4HhvbAYeI0c');
+_ = Parse._;
 
 function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -40,7 +41,7 @@ var start = function(){
             $('.chatArea').append('<div><input type="text" class="sendMessage"></div>')
             $('.sendMessage').on("keydown", function(e){
                 if(e.keyCode == 13){
-                    sendMessageToMeeting({person:_person, message:$(this).val(), meeting: _meeting},function(){
+                    sendMessageToMeeting({person:_person, text:$(this).val(), meeting: _meeting},function(){
                         refreshChat();
                     });
                 }
