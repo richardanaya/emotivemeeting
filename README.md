@@ -1,3 +1,3 @@
 emotivemeeting
 ==============
-![Screenshot](username.github.com/repository/screenshot.png)
+![Screenshot](https://github.com/richardanaya/emotivemeeting/blob/master/screenshot.png)
