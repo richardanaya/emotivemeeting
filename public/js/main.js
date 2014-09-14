@@ -15,11 +15,25 @@ function getParameterByName(name) {
 }
 
 var meeting = getParameterByName("meeting");
-var name = getParameterByName("name");
+var user = getParameterByName("user");
 
-$('.sendMessage').on("keydown", function(e){
-    debugger;
-    if(e.keyCode == 13){
-        alert($(this).val());
-    }
-})
+
+function refreshChat(){
+    getChatMessages({meeting:meeting},function(data){
+        $('.chatArea').html("");
+        for(var i  = 0 ; i < data.messages.length; i++){
+            $('.chatArea').append('<div class="chatMessage"><span class="chatMessageUser">'+data.messages[i].user+': </span><span class="chatMessageText">'+data.messages[i].text+'</span></div>')
+        }
+        $('.chatArea').append('<div><input type="text" class="sendMessage"></div>')
+        $('.sendMessage').on("keydown", function(e){
+            if(e.keyCode == 13){
+                sendMessageToMeeting({user:user, message:$(this).val(), meeting: meeting},function(){
+                    refreshChat();
+                });
+            }
+        })
+        $('.sendMessage').focus();
+    });
+}
+
+refreshChat();
