@@ -21,6 +21,7 @@ var meeting = getParameterByName("meeting");
 var user = getParameterByName("user");
 
 var _meeting = null;
+var _person = null;
 
 var start = function(){
     function refreshChat(){
@@ -39,7 +40,7 @@ var start = function(){
             $('.chatArea').append('<div><input type="text" class="sendMessage"></div>')
             $('.sendMessage').on("keydown", function(e){
                 if(e.keyCode == 13){
-                    sendMessageToMeeting({user:user, message:$(this).val(), meeting: meeting},function(){
+                    sendMessageToMeeting({person:_person, message:$(this).val(), meeting: _meeting},function(){
                         refreshChat();
                     });
                 }
@@ -81,6 +82,7 @@ q.first().then(function(m){
         return p.save();
     }
 }).then(function(person){
+    _person = person;
     var people = _meeting.get("people");
     if(people){
         var found = false;

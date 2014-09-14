@@ -1,4 +1,8 @@
 function sendMessageToMeeting(data,callback){
-    _data.messages.push({user: data.user, text: data.message})
-    callback();
+    var Note = Parse.Object.extend("Note");
+    var n = new Note();
+    n.set("meeting",data.meeting)
+    n.set("person",data.person);
+    n.set("text",data.message)
+    n.save().then(callback);
 }

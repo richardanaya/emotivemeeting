@@ -3,6 +3,7 @@ function getChatMessages (data,callback){
     q.equalTo("meeting",data.meeting)
     q.include("person");
     q.include("sentiments");
+    q.ascending("createdAt");
     q.find(function(messages){
         var ret = [];
         for(var i in messages){
