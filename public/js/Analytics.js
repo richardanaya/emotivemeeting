@@ -7,7 +7,16 @@ function buildAnalyticsDialog() {
     $('.actions','#analyticsDialog').html("")
     getActions({meeting:_meeting}).then(function(actions){
         for (var i in actions){
-            $('.actions','#analyticsDialog').append('<div class="action">'+actions[i].get("type")+' '+JSON.stringify(actions[i].get("data"))+'</div>')
+            var type = actions[i].get("type");
+            if(type == "fixBug"){
+                $('.actions','#analyticsDialog').append('<li class="action">Fix <a href="#">BUG-'+actions[i].get("data").number+'</a></li>')
+            }
+            else if(type == "scheduleMeeting"){
+                $('.actions','#analyticsDialog').append('<li class="action">Schedule meeting on <a href="#">'+actions[i].get("data")['date-time']+'</a></li>')
+            }
+            else {
+                $('.actions','#analyticsDialog').append('<li class="action">'+actions[i].get("type")+' '+JSON.stringify(actions[i].get("data"))+'</li>')
+            }
         }
     });
 
