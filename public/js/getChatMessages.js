@@ -1,23 +1,27 @@
-function getChatMessages (data,callback){
+function getChatMessages (data) {
     var q = new Parse.Query("Note");
-    q.equalTo("meeting",data.meeting)
+    q.equalTo("meeting", data.meeting);
     q.include("person");
     q.include("sentiments");
     q.ascending("createdAt");
-    q.find(function(messages){
-        var ret = [];
-        for(var i in messages){
-            var sentiments = messages[i].get("sentiments");
-            var intensity = 0;
-            for(var j in sentiments){
-                intensity += sentiments[j].get("intensity");
+    return q.find().then(function(notes) {
+        return _.map(notes, function(note) {
+            var sentiments = note.get("sentiments");
+            // A sentiment with no topic is the sentiment for this post
+            var aggregate = _.find(sentiments, function (sentiment) { return !sentiment.get('topic'); });
+            if (!aggregate) {
+                console.log('Warning: no aggregate sentiment for note: ' + note.get('text'));
+                aggregate = new Parse.Object('Sentiment', {
+                    score: 0,
+                    sentiment: 'neutral'
+                });
             }
-            ret.push({
-                user:messages[i].get("person").get("name"),
-                text:messages[i].get("text"),
-                emotion: intensity
-            })
-        }
-        callback({messages:ret});
-    })
+            return {
+                user:note.get("person").get("name"),
+                text:note.get("text"),
+                sentiment: aggregate.get('sentiment'),
+                score: aggregate.get('score')
+            };
+        });
+    });
 }

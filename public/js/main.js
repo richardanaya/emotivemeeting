@@ -25,23 +25,31 @@ var _meeting = null;
 var _person = null;
 
 var start = function(){
+    var messageCount = 0;
+
     function refreshChat(){
-        getChatMessages({meeting:_meeting},function(data){
+        return getChatMessages({meeting:_meeting}).then(function(messages) {
+            if (messageCount == messages.length) {
+                // If we haven't received any new messages, don't refresh
+                return;
+            }
+            messageCount = messages.length;
             $('.chatArea').html("");
-            for(var i  = 0 ; i < data.messages.length; i++){
+            for (var i  = 0 ; i < messages.length; i++){
                 var sentiment = "";
-                if(data.messages[i].emotion>0){
+                if(messages[i].score > 0){
                     sentiment = '<i class="fa fa-thumbs-o-up"></i>'
                 }
-                else if(data.messages[i].emotion<0){
+                else if (messages[i].score < 0){
                     sentiment = '<i class="fa fa-thumbs-o-down"></i>'
                 }
-                $('.chatArea').append('<div class="chatMessage"><span class="chatMessageUser">'+data.messages[i].user+' '+sentiment+': </span><span class="chatMessageText">'+data.messages[i].text+'</span></div>')
+                $('.chatArea').append('<div class="chatMessage"><span class="chatMessageUser">'+messages[i].user+' '+sentiment+': </span><span class="chatMessageText">'+messages[i].text+'</span></div>')
             }
             $('.chatArea').append('<div><input type="text" class="sendMessage"></div>')
             $('.sendMessage').on("keydown", function(e){
                 if(e.keyCode == 13){
-                    sendMessageToMeeting({person:_person, text:$(this).val(), meeting: _meeting},function(){
+                    var text = $(this).val();
+                    sendMessageToMeeting({person:_person, text:text, meeting: _meeting},function(){
                         refreshChat();
                     });
                 }
@@ -50,7 +58,12 @@ var start = function(){
         });
     }
 
-    refreshChat();
+    function pollChat() {
+        refreshChat().then(function() {
+            setTimeout(pollChat, 5000);
+        });
+    };
+    pollChat();
 };
 
 
