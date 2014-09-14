@@ -20,17 +20,27 @@ var _person = null;
 var start = function(){
     // Set up analytics event handler
     $('.analytics').on('click', function(e) {
-        // Go to analytics page
+        getActions({meeting:_meeting}).then(function(actions){
+            $('.actions','#analyticsDialog').html("")
+            for(var i in actions){
+                $('.actions','#analyticsDialog').append('<div class="action">'+actions[i].get("type")+' '+JSON.stringify(actions[i].get("data"))+'</div>')
+            }
+        })
+        $('.participants','#analyticsDialog').html("")
+        loadMeeting().then(function(meet){
+            var people = meet.get("people");
+            for(var i in people){
+                $('.participants','#analyticsDialog').append('<div class="participant">'+people[i].get("name")+'('+people[i].get("role")+'/'+people[i].get("trait")+')</div>')
+            }
+        })
+
+        $('#analyticsDialog').modal();
     });
 
     var messageCount = 0;
 
     function refreshChat(){
         return getChatMessages({meeting:_meeting}).then(function(messages) {
-            if (messageCount == messages.length) {
-                // If we haven't received any new messages, don't refresh
-                return;
-            }
             messageCount = messages.length;
             $('.chatArea').html("");
             for (var i  = 0 ; i < messages.length; i++){
@@ -133,44 +143,83 @@ loadMeeting().then(function() {
     start();
 });
 
+function feedData(s){
+    var d = [];
+    var lines = s.split("\n")
+    for(var i in lines){
+        var line = lines[i];
+        var s = line.split(":");
+        d.push({
+            name: s[0],
+            text: line.substring(s[0].length+1)
+        });
+    }
 
+    var ct = d.length;
+    var i = 0;
+    var go = function(){
+        if(i >= ct){
+            location.reload();
+        }
+        var saying = d[i];
+        feed(saying,go)
+        i++
+    }
+    go();
+};
+
+function feed(saying,done){
+    user = saying.name;
+    loadPerson().then(function(){
+        sendMessageToMeeting({person:_person, text:saying.text, meeting: _meeting},function(){
+            done();
+        });
+    })
+}
+
+
+var modalSetup = false;
 $('.user').click(function(){
     $('.userName','#userSettings').html(user);
     $('.userRole','#userSettings').val(_person.get("role"));
-    $('.userRole','#userSettings').on("blur",function(){
-        _person.set("role",$(this).val());
-        _person.save();
-    })
     $('.userTrait','#userSettings').html(_person.get("trait"));
     $('#userSettings').modal();
-    $(".btnTakeTest").click(function(){
-        Traitify.setPublicKey("bhjtda24lq75eivuug5hnlu9j7");
-        Traitify.setHost("https://api-sandbox.traitify.com");
-        Traitify.setVersion("v1");
+    if(!modalSetup) {
+        modalSetup = true;
 
-        //curl https://api-sandbox.traitify.com/v1/assessments -H "Content-Type: application/json" -unps7ahk5oqhl5bdgua6lso3rp:datahack  -d '{"deck_id": "career-deck"}'
+        $('.userRole', '#userSettings').on("blur", function () {
+            _person.set("role", $(this).val());
+            _person.save();
+        })
+        $(".btnTakeTest").click(function () {
+            Traitify.setPublicKey("bhjtda24lq75eivuug5hnlu9j7");
+            Traitify.setHost("https://api-sandbox.traitify.com");
+            Traitify.setVersion("v1");
 
-        $.ajax({url:"/assess",
-            success: function(res){
-                var assessmentId = res.id;
-                var traitTest = Traitify.ui.slideDeck(assessmentId, ".assessment", function(data) {
-                    Traitify.ui.resultsProp(assessmentId, ".assessment", {showTraits: true});
-                    Traitify.getPersonalityTypes(assessmentId, function(results){
-                        debugger;
-                        var type = "";
-                        var score = 0;
-                        for(var i in results.personality_types){
-                            var t = results.personality_types[i];
-                            if(t.score > score){
-                                type = t.personality_type.name;
-                                score = t.score;
+            //curl https://api-sandbox.traitify.com/v1/assessments -H "Content-Type: application/json" -unps7ahk5oqhl5bdgua6lso3rp:datahack  -d '{"deck_id": "career-deck"}'
+
+            $.ajax({url: "/assess",
+                success: function (res) {
+                    var assessmentId = res.id;
+                    var traitTest = Traitify.ui.slideDeck(assessmentId, ".assessment", function (data) {
+                        Traitify.ui.resultsProp(assessmentId, ".assessment", {showTraits: true});
+                        Traitify.getPersonalityTypes(assessmentId, function (results) {
+                            debugger;
+                            var type = "";
+                            var score = 0;
+                            for (var i in results.personality_types) {
+                                var t = results.personality_types[i];
+                                if (t.score > score) {
+                                    type = t.personality_type.name;
+                                    score = t.score;
+                                }
                             }
-                        }
-                        _person.set("trait",type);
-                        _person.save();
-                        $('.userTrait','#userSettings').html(type);
+                            _person.set("trait", type);
+                            _person.save();
+                            $('.userTrait', '#userSettings').html(type);
+                        });
                     });
-                });
-            }});
-    })
+                }});
+        })
+    }
 })
