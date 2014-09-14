@@ -50,6 +50,10 @@ var start = function(){
                 if(e.keyCode == 13){
                     var text = $(this).val();
                     sendMessageToMeeting({person:_person, text:text, meeting: _meeting},function(){
+                        pubnub.publish({
+                            channel : meeting,
+                            message : "update"
+                        })
                         refreshChat();
                     });
                 }
@@ -58,12 +62,19 @@ var start = function(){
         });
     }
 
-    function pollChat() {
-        refreshChat().then(function() {
-            setTimeout(pollChat, 5000);
-        });
-    };
-    pollChat();
+    refreshChat();
+
+    var pubnub = PUBNUB.init({
+        publish_key   : 'pub-c-bdff1d47-6041-4873-bc12-ca5673da1469',
+        subscribe_key : 'sub-c-e1bc9878-af93-11e3-a26b-02ee2ddab7fe'
+    })
+
+    pubnub.subscribe({
+        channel : meeting,
+        message : function(m){
+            refreshChat();
+        }
+    })
 };
 
 
